@@ -65,4 +65,13 @@ public class Position {
     public Position add(Position pos) {
         return new Position(this.x + pos.getX(), this.y + pos.getY());
     }
+
+    /**
+     * Renvoie une représentation en {@link String} de la {@link Position}
+     * @return La représentation en String de la Position
+     */
+    @Override
+    public String toString() {
+        return "(" + this.x + ", " + this.y + ")";
+    }
 }

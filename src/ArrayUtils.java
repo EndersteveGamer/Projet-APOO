@@ -1,3 +1,5 @@
+import java.util.Arrays;
+
 /**
  * Une classe contenant des fonctions utilitaires en lien avec les tableaux
  */
@@ -27,5 +29,17 @@ public class ArrayUtils {
         for (int i = 0; i < list.length; i++) {
             if (list[i] == null) {list[i] = obj; return;}
         }
+    }
+
+    /**
+     * Renvoie le nombre d'objets non null dans une liste
+     * @param list La liste dont on veut compter les éléments
+     * @return Le nombre d'éléments non null
+     * @param <T> N'importe quel type d'objet
+     */
+    public static <T> int numNotNull(T[] list) {
+        int count = 0;
+        for (T t : list) if (t != null) count++;
+        return count;
     }
 }

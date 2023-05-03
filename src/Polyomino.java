@@ -50,14 +50,14 @@ public class Polyomino {
                     for (Position pos : directions) {
                         if (isValidPosition(pos, this.blocks[y].length, this.blocks.length)
                                 && !this.blocks[pos.getY()][pos.getX()]
-                                && ArrayUtils.contains(possiblePositions, pos)) {
+                                && !ArrayUtils.contains(possiblePositions, pos)) {
                             ArrayUtils.addObject(possiblePositions, pos);
                         }
                     }
                 }
             }
 
-            Position selectedPosition = possiblePositions[(int) (Math.random() * possiblePositions.length)];
+            Position selectedPosition = possiblePositions[(int) (Math.random() * ArrayUtils.numNotNull(possiblePositions))];
 
             this.blocks[selectedPosition.getY()][selectedPosition.getX()] = true;
         }
