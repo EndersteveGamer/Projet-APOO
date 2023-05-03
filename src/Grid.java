@@ -3,22 +3,32 @@
  */
 public class Grid {
     private char[][] matrix;
+    private Player[] players;
+    private int height;
+    private int width;
+    private int playersNum;
 
     /**
      * Le constructeur de la grille
      */
     public Grid() {
-        int width;
-        int height;
+        askParameters();
 
-        matrix = new char[0][0];
+        this.players = new Player[this.playersNum];
+
+        this.matrix = new char[0][0];
     }
 
+
+    /**
+     * Renvoie une représentation en {@link String} de la grille
+     * @return Une représentation en String de la grille
+     */
     public String toString(){
         char[][] mat = this.matrix;
         StringBuilder res = new StringBuilder("   +");
-        int nbLignes = mat.length;
-        int nbColonnes = mat[0].length;
+        int nbLignes = this.height;
+        int nbColonnes = this.width;
         for(int i = 0; i < nbColonnes; i++){
             res.append("- ");
         }
@@ -33,5 +43,16 @@ public class Grid {
             res.append("\n");
         }
         return res.toString();
+    }
+
+    /**
+     * Permet de demander les différentes valeurs des paramètres à l'utilisateur
+     * <p>Utilisé uniquement à l'initialisation de l'objet
+     */
+    private void askParameters() {
+        this.height = ConsoleUtils.askInt("Entrez la hauteur de la grille", 5, 40);
+        this.width = ConsoleUtils.askInt("Entrez la largeur de la grille", 5, 40);
+        this.playersNum = ConsoleUtils.askInt(
+                "Entrez le nombre de joueurs (ordinateurs compris)", 1, 10);
     }
 }
