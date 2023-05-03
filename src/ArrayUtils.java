@@ -1,5 +1,3 @@
-import java.util.Arrays;
-
 /**
  * Une classe contenant des fonctions utilitaires en lien avec les tableaux
  */

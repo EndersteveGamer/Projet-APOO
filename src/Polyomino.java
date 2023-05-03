@@ -1,5 +1,3 @@
-import java.util.Arrays;
-
 /**
  * Une classe représentant un Polyomino
  */
@@ -87,7 +85,7 @@ public class Polyomino {
         StringBuilder str = new StringBuilder();
         for (int y = 0; y < this.blocks.length; y++) {
             for (int x = 0; x < this.blocks.length; x++) {
-                str.append((this.blocks[y][x]) ? "X " : ". ");
+                str.append((this.blocks[y][x]) ? "X  " : ".  ");
             }
             str.append('\n');
         }
