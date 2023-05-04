@@ -3,18 +3,17 @@
  */
 public class Main {
     private static Player[] players;
+    private static Grid grid;
 
     /**
      * La fonction principale
      * @param args Les arguments
      */
     public static void main(String[] args) {
-        init();
+        System.out.println(AnswerUtils.toLowercase("Ceci Est uN TeXtE"));
 
-        for (Player player : players) System.out.println(player.getChar());
-        for (int i = 0; i < 10; i++) {
-            System.out.println(new Polyomino(4));
-        }
+        init();
+        grid = new Grid();
     }
 
     public static void init() {

@@ -16,7 +16,12 @@ public class Grid {
 
         this.players = new Player[this.playersNum];
 
-        this.matrix = new char[0][0];
+
+
+        this.matrix = new char[height][width];
+        for (int y = 0; y < this.matrix.length; y++) {
+            for (int x = 0; x < this.matrix[y].length; x++) this.matrix[y][x] = '.';
+        }
     }
 
 
@@ -54,5 +59,10 @@ public class Grid {
         this.width = ConsoleUtils.askInt("Entrez la largeur de la grille", 5, 40);
         this.playersNum = ConsoleUtils.askInt(
                 "Entrez le nombre de joueurs (ordinateurs compris)", 1, 10);
+    }
+
+    private void initPlayers() {
+        for (int i = 0; i < this.playersNum; i++) {
+        }
     }
 }
