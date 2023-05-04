@@ -29,11 +29,27 @@ public class Position {
     }
 
     /**
+     * Un setter pour la position en x
+     * @param x La nouvelle coordonnée en x
+     */
+    public void setX(int x) {
+        this.x = x;
+    }
+
+    /**
      * Un getter pour la position en y
      * @return Un entier correspondant à la coordonnée de l'axe y
      */
     public int getY() {
         return this.y;
+    }
+
+    /**
+     * Un setter pour la position en y
+     * @param y La nouvelle coordonnée en y
+     */
+    public void setY(int y) {
+        this.y = y;
     }
 
     /**
@@ -64,6 +80,16 @@ public class Position {
      */
     public Position add(Position pos) {
         return new Position(this.x + pos.getX(), this.y + pos.getY());
+    }
+
+    /**
+     * Permet d'incrémenter les positions x et y avec les deux valeurs données
+     * @param x La valeur x à ajouter
+     * @param y La valeur y à ajouter
+     * @return Une nouvelle position avec les coordonnées ajoutées
+     */
+    public Position add(int x, int y) {
+        return new Position(this.x + x, this.y + y);
     }
 
     /**

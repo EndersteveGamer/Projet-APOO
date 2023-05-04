@@ -23,4 +23,26 @@ public class ConsoleUtils {
         } while (result < min || result > max);
         return 0;
     }
+
+    /**
+     * Renvoie un {@link String} correspondant à la numérotation de la ligne représentée avec des lettres
+     * <p> La numérotation ne comporte qu'une lettre lorsque la grille a une hauteur inférieure à 26, et deux lettres
+     * sinon
+     * @param num Le numéro de la ligne
+     * @param matrixHeight La hauteur de la grille
+     * @return Un String correspondant à la numérotation de la ligne
+     */
+    public static String getLetterNum(int num, int matrixHeight) {
+        if (matrixHeight <= 26) return String.valueOf(
+                (char)(
+                        (int)'A' + num)
+        );
+        String result = String.valueOf((char)(
+                (int) 'A' + num % 26
+                ));
+        result = (char) (
+                (int) 'A' + num - num % 26
+        ) + result;
+        return result;
+    }
 }

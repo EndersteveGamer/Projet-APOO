@@ -1,12 +1,15 @@
+import java.util.Scanner;
+
 /**
  * Une classe représentant la grille de jeu
  */
 public class Grid {
     private char[][] matrix;
-    private Player[] players;
+    private final Player[] players;
     private int height;
     private int width;
     private int playersNum;
+    private int maxPolySize;
 
     /**
      * Le constructeur de la grille
@@ -16,7 +19,7 @@ public class Grid {
 
         this.players = new Player[this.playersNum];
 
-
+        initPlayers();
 
         this.matrix = new char[height][width];
         for (int y = 0; y < this.matrix.length; y++) {
@@ -24,6 +27,13 @@ public class Grid {
         }
     }
 
+    /**
+     * Retourne la matrice 2D de la grille
+     * @return Une matrice 2D de caractères
+     */
+    public char[][] getMatrix() {
+        return matrix;
+    }
 
     /**
      * Renvoie une représentation en {@link String} de la grille
@@ -59,10 +69,52 @@ public class Grid {
         this.width = ConsoleUtils.askInt("Entrez la largeur de la grille", 5, 40);
         this.playersNum = ConsoleUtils.askInt(
                 "Entrez le nombre de joueurs (ordinateurs compris)", 1, 10);
+        this.playersNum = ConsoleUtils.askInt(
+                "Entrez la taille maximale de Polyomino possible", 2,
+                Math.min(Math.min(this.height, this.width), 20)
+        );
     }
 
+    /**
+     * Une fonction qui demande à l'utilisateur quel caractère d'affichage de {@link Polyomino} utiliser pour chaque
+     * joueur, et si le joueur est un ordinateur
+     * <p> Le caractère '.' n'est pas utilisable par un joueur, correspondant à une case vide
+     * <p> Cette fonction est utilisée à l'initialisation de la partie
+     */
     private void initPlayers() {
+        final Scanner sc = new Scanner(System.in);
         for (int i = 0; i < this.playersNum; i++) {
+            System.out.println("Paramètres du joueur " + (i + 1));
+            char chr;
+            do {
+                System.out.println("Entrez le caractère d'affichage du joueur");
+                chr = sc.next().charAt(0);
+                if (chr == '.') System.out.println("Ce caractère n'est pas valide");
+                else if (isTaken(chr)) System.out.println("Ce caractère est déjà pris");
+            } while (chr == '.' || isTaken(chr));
+
+            String answer;
+            boolean isBot = true;
+            do {
+                System.out.println("Voulez-vous que ce joueur soit un ordinateur?");
+                answer = sc.next();
+                if (!AnswerUtils.isValid(answer)) System.out.println("Cette réponse n'est pas valide!");
+                else isBot = AnswerUtils.isYes(answer);
+            } while (!AnswerUtils.isValid(answer));
+            this.players[i] = new Player(chr, isBot);
         }
+    }
+
+    /**
+     * Une fonction qui renvoie vrai si le caractère en paramètre est déjà utilisé par un autre joueur
+     * @param chr Le caractère dont on veut vérifier si il est déjà utilisé
+     * @return vrai si le caractère est déjà utilisé, faux sinon
+     */
+    private boolean isTaken(char chr) {
+        for (Player player : this.players) {
+            if (player == null) return false;
+            if (player.getChar() == chr) return true;
+        }
+        return false;
     }
 }
