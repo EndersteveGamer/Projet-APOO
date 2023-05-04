@@ -10,9 +10,6 @@ public class Main {
      * @param args Les arguments
      */
     public static void main(String[] args) {
-        for (int i = 0; i < 40; i++) {
-            System.out.println(ConsoleUtils.getLetterNum(i, 40));
-        }
 
         init();
         grid = new Grid();

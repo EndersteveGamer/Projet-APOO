@@ -38,11 +38,39 @@ public class ConsoleUtils {
                         (int)'A' + num)
         );
         String result = String.valueOf((char)(
-                (int) 'A' + num % 26
+                (int) 'A' + num / 26
                 ));
-        result = (char) (
-                (int) 'A' + num - num % 26
-        ) + result;
+        result += String.valueOf((char)(
+                (int) 'A' + num % 26
+        ));
         return result;
+    }
+
+    /**
+     * Renvoie la valeur en integer d'une numérotation sous forme de lettre
+     * @param str Le String de la numérotation sous forme de lettre
+     * @return La valeur en integer correspondant à la numérotation en entrée
+     */
+    public static int getNumFromLetter(String str, int matrixHeight) {
+        if (matrixHeight <= 26) return (int) str.charAt(0) - (int) 'A';
+        else {
+            int result = 0;
+            result += (int) str.charAt(1) - (int) 'A';
+            result += 26 * ((int) str.charAt(0) - (int) 'A');
+            return result;
+        }
+    }
+
+    /**
+     * Renvoie si une numérotation de colonne sous la forme de lettres est valide (que des lettres entre A et Z)
+     * @param str Le String des lettres dont on veut vérifier la validité
+     * @return vrai si les lettres sont valides, faux sinon
+     */
+    public static boolean isValidLetter(String str) {
+        for (int i = 0; i < str.length(); i++) {
+            char chr = str.charAt(i);
+            if ((int) chr < (int) 'A' || (int) chr > (int) 'Z') return false;
+        }
+        return true;
     }
 }

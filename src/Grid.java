@@ -102,6 +102,7 @@ public class Grid {
                 else isBot = AnswerUtils.isYes(answer);
             } while (!AnswerUtils.isValid(answer));
             this.players[i] = new Player(chr, isBot);
+            System.out.println();
         }
     }
 
@@ -116,5 +117,49 @@ public class Grid {
             if (player.getChar() == chr) return true;
         }
         return false;
+    }
+
+    private Position enterPosition() {
+        Scanner sc = new Scanner(System.in);
+        String answer;
+
+        StringBuilder line;
+        StringBuilder column;
+        int lineNum = 0;
+        int columnNum = 0;
+        boolean isValid;
+
+        do {
+            System.out.println("Entrez la position du placement de la pièce (exemple: A1)");
+            isValid = true;
+            line = new StringBuilder();
+            column = new StringBuilder();
+            answer = sc.next();
+
+            for (int i = 0; i < answer.length(); i++) {
+                if ((int) answer.charAt(i) >= (int) 'A' && (int) answer.charAt(i) <= (int) 'Z') column.append(answer.charAt(i));
+                if ((int) answer.charAt(i) >= (int) '0' && (int) answer.charAt(i) <= (int) '9') line.append(answer.charAt(i));
+            }
+
+            try {
+                columnNum = Integer.parseInt(line.toString());
+            } catch (NumberFormatException e) {
+                System.out.println("Le numéro de colonne n'est pas correct!");
+                isValid = false;
+            }
+
+            if (!ConsoleUtils.isValidLetter(column.toString())) {
+                System.out.println("La ligne n'est pas correcte!");
+                isValid = false;
+            }
+            else lineNum = ConsoleUtils.getNumFromLetter(column.toString(), this.matrix.length);
+
+            if (lineNum > this.matrix.length) {
+                System.out.println("Cette colonne ne fait pas partie de la grille!");
+                isValid = false;
+            }
+        } while (!isValid);
+
+        return new Position(columnNum, lineNum);
     }
 }
