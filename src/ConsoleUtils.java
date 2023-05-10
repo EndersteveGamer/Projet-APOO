@@ -73,4 +73,17 @@ public class ConsoleUtils {
         }
         return true;
     }
+
+    /**
+     * Une fonction renvoyant un {@link String} complété avec des espaces si la longueur du String donné n'est pas
+     * assez grande
+     * @param str Le {@link String} à compléter
+     * @param length La longueur de String souhaitée
+     * @return Le String éventuellement complété avec des espaces
+     */
+    public static String completeString(String str, int length) {
+        StringBuilder stringBuilder = new StringBuilder(str);
+        while (stringBuilder.length() < length) stringBuilder.append(' ');
+        return stringBuilder.toString();
+    }
 }

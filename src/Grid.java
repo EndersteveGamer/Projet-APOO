@@ -78,6 +78,24 @@ public class Grid {
      * @return vrai si la partie est finie, faux sinon
      */
     public boolean playerTurn(Player player) {
+        System.out.println(this);
+        System.out.println("Polyomino à placer:");
+        System.out.println(player.getPolyominos()[0]);
+        Polyomino polyomino = player.getPolyominos()[0];
+        Position[] possiblePositions = new Position[this.width * this.height];
+        for (int y = 0; y < this.height; y++) {
+            for (int x = 0; x < this.width; x++) {
+                Position pos = new Position(x, y);
+                if (isFree(polyomino, pos)) ArrayUtils.addObject(possiblePositions, pos);
+            }
+        }
+        if (ArrayUtils.numNotNull(possiblePositions) == 0) return true;
+        Position selectedPosition = new Position(-1, -1);
+        while (!ArrayUtils.contains(possiblePositions, selectedPosition)) {
+            selectedPosition = enterPosition();
+        }
+        placePolyomino(polyomino, player, selectedPosition);
+        player.removePolyomino(0, this);
         return false;
     }
 
@@ -94,24 +112,34 @@ public class Grid {
      * @return Une représentation en String de la grille
      */
     public String toString(){
-        char[][] mat = this.matrix;
-        StringBuilder res = new StringBuilder("   +");
-        int nbLignes = this.height;
-        int nbColonnes = this.width;
-        for(int i = 0; i < nbColonnes; i++){
-            res.append("- ");
-        }
-        res.append("+\n");
-        for(int i = 0; i < nbLignes - 1; i++){
-            if(i == 0) res.append(10 + " |");
-            else res.append(10 - i).append("  |");
-            for(int j = 0; j < nbColonnes; j++){
+        StringBuilder str = new StringBuilder("    ");
 
-                res.append(mat[i][j]).append("  ");
-            }
-            res.append("\n");
+        // Affichage des colonnes
+        for (int i = 0; i < this.width; i++) {
+            str.append(" ").append(ConsoleUtils.completeString(String.valueOf(i + 1), 2));
         }
-        return res.toString();
+        str.append('\n');
+
+        // Affichage de la première ligne
+        str.append("   +");
+        for (int i = 0; i < this.width; i++) str.append("___");
+        str.append("+\n");
+
+        // Affichage des lignes
+        for (int y = 0; y < this.height; y++) {
+            str.append(ConsoleUtils.completeString(ConsoleUtils.getLetterNum(y, this.height), 2)).append(" |");
+            for (int x = 0; x < this.width; x++) {
+                str.append(" ").append(this.matrix[y][x]).append(" ");
+            }
+            str.append("|\n");
+        }
+
+        // Affichage de la dernière ligne
+        str.append("   +");
+        for (int i = 0; i < this.width; i++) str.append("___");
+        str.append("+\n");
+
+        return str.toString();
     }
 
     /**
@@ -223,7 +251,7 @@ public class Grid {
             break;
         }
 
-        return new Position(columnNum, lineNum);
+        return new Position(columnNum - 1, lineNum);
     }
 
     /**
@@ -233,9 +261,9 @@ public class Grid {
      * @return Vrai si le polyomino peut être placé à cette position, faux sinon
      */
     private boolean isFree(Polyomino polyomino, Position selectedPosition) {
-        for (int x = 0; x < polyomino.getBlocks().length; x++) {
-            for (int y = 0; y < polyomino.getBlocks()[0].length; y++) {
-                if (!polyomino.getBlocks()[x][y]) continue;
+        for (int y = 0; y < polyomino.getBlocks().length; y++) {
+            for (int x = 0; x < polyomino.getBlocks()[y].length; x++) {
+                if (!polyomino.getBlocks()[y][x]) continue;
                 Position res = new Position(selectedPosition.getX() + x - polyomino.getCenterPosition().getX(),
                         selectedPosition.getY() + y - polyomino.getCenterPosition().getY());
                 if (res.getX() < 0 || res.getY() < 0 || res.getY() > this.height - 1 || res.getX() > this.width - 1) return false;
@@ -267,6 +295,7 @@ public class Grid {
                 this.matrix[res.getY()][res.getX()] = player.getChar();
             }
         }
+        player.removePolyomino(0, this);
         return true;
     }
 

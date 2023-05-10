@@ -26,7 +26,7 @@ public class Polyomino {
      * @param maxSize La taille du {@link Polyomino} voulue
      */
     public Polyomino(int maxSize) {
-        int size = 2 + (int) (Math.random() * (maxSize - 2));
+        int size = 2 + (int) (Math.random() * (maxSize - 1));
         this.blocks = new boolean[2 * size - 1][2 * size - 1];
         for (int y = 0; y < this.blocks.length; y++) {
             for (int x = 0; x < this.blocks[0].length; x++) this.blocks[y][x] = false;
