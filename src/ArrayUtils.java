@@ -40,4 +40,17 @@ public class ArrayUtils {
         for (T t : list) if (t != null) count++;
         return count;
     }
+
+    /**
+     * Retire un objet de la liste en décalant tous les objets de la liste vers la gauche. La place vide créée par
+     * l'opération est remplie avec le contenu du paramètre replacement
+     * @param list La liste dont on veut retirer l'élément
+     * @param removeIndex L'indice de l'élément à retirer
+     * @param replacement L'objet avec lequel combler l'espace laissé vide
+     * @param <T> N'importe quel type d'objet
+     */
+    public static <T> void removeAndPushBack(T[] list, int removeIndex, T replacement) {
+        for (int i = removeIndex; i < list.length - 1; i++) list[i] = list[i + 1];
+        list[list.length - 1] = replacement;
+    }
 }

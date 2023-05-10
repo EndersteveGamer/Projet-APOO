@@ -23,9 +23,10 @@ public class Polyomino {
 
     /**
      * Un constructeur qui génère procéduralement un {@link Polyomino} de taille donnée
-     * @param size La taille du {@link Polyomino} voulue
+     * @param maxSize La taille du {@link Polyomino} voulue
      */
-    public Polyomino(int size) {
+    public Polyomino(int maxSize) {
+        int size = 2 + (int) (Math.random() * (maxSize - 2));
         this.blocks = new boolean[2 * size - 1][2 * size - 1];
         for (int y = 0; y < this.blocks.length; y++) {
             for (int x = 0; x < this.blocks[0].length; x++) this.blocks[y][x] = false;

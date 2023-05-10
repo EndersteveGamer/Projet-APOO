@@ -22,9 +22,63 @@ public class Grid {
         initPlayers();
 
         this.matrix = new char[height][width];
-        for (int y = 0; y < this.matrix.length; y++) {
-            for (int x = 0; x < this.matrix[y].length; x++) this.matrix[y][x] = '.';
+        for (int y = 0; y < this.height; y++) {
+            for (int x = 0; x < this.width; x++) this.matrix[y][x] = '.';
         }
+    }
+
+    /**
+     * La fonction qui va faire se dérouler la partie, donnant leur tour à chacun des joueurs
+     */
+    public void play() {
+        while (true) {
+            for (int i = 0; i < this.playersNum; i++) {
+                Player player = this.players[i];
+                boolean isGameFinished;
+
+                System.out.println("C'est le tour du joueur " + (i + 1));
+
+                if (player.isBot()) isGameFinished = botTurn(player);
+                else isGameFinished = playerTurn(player);
+
+                if (isGameFinished) return;
+            }
+        }
+    }
+
+    /**
+     * Une fonction qui va faire se dérouler le tour d'un joueur ordinateur, en plaçant aléatoirement le {@link Polyomino}
+     * du joueur
+     * @param player Le joueur dont c'est le tour
+     * @return vrai si la partie est finie, faux sinon
+     */
+    public boolean botTurn(Player player) {
+        System.out.println(this);
+        Polyomino polyomino = player.getPolyominos()[0];
+        Position[] possiblePositions = new Position[this.width * this.height];
+        for (int y = 0; y < this.height; y++) {
+            for (int x = 0; x < this.width; x++) {
+                Position pos = new Position(x, y);
+                if (isFree(polyomino, pos)) ArrayUtils.addObject(possiblePositions, pos);
+            }
+        }
+        if (ArrayUtils.numNotNull(possiblePositions) == 0) return true;
+        placePolyomino(
+                polyomino,
+                player,
+                possiblePositions[(int) (Math.random() * ArrayUtils.numNotNull(possiblePositions))]
+        );
+        return false;
+    }
+
+    /**
+     * Une fonction qui va faire se dérouler le tour d'un joueur non ordinateur, en demandant au joueur d'entrer une
+     * position à laquelle placer son {@link Polyomino}
+     * @param player Le joueur dont c'est le tour
+     * @return vrai si la partie est finie, faux sinon
+     */
+    public boolean playerTurn(Player player) {
+        return false;
     }
 
     /**
@@ -68,8 +122,8 @@ public class Grid {
         this.height = ConsoleUtils.askInt("Entrez la hauteur de la grille", 5, 40);
         this.width = ConsoleUtils.askInt("Entrez la largeur de la grille", 5, 40);
         this.playersNum = ConsoleUtils.askInt(
-                "Entrez le nombre de joueurs (ordinateurs compris)", 1, 10);
-        this.playersNum = ConsoleUtils.askInt(
+                "Entrez le nombre de joueurs (ordinateurs compris)", 2, 10);
+        this.maxPolySize = ConsoleUtils.askInt(
                 "Entrez la taille maximale de Polyomino possible", 2,
                 Math.min(Math.min(this.height, this.width), 20)
         );
@@ -101,7 +155,7 @@ public class Grid {
                 if (!AnswerUtils.isValid(answer)) System.out.println("Cette réponse n'est pas valide!");
                 else isBot = AnswerUtils.isYes(answer);
             } while (!AnswerUtils.isValid(answer));
-            this.players[i] = new Player(chr, isBot);
+            this.players[i] = new Player(chr, isBot, this);
             System.out.println();
         }
     }
@@ -119,19 +173,21 @@ public class Grid {
         return false;
     }
 
+    /**
+     * Demande à l'utilisateur de rentrer une {@link Position} sous forme de texte, et renvoie la Position correspondante
+     * @return La {@link Position} rentrée par l'utilisateur
+     */
     private Position enterPosition() {
         Scanner sc = new Scanner(System.in);
         String answer;
 
         StringBuilder line;
         StringBuilder column;
-        int lineNum = 0;
-        int columnNum = 0;
-        boolean isValid;
+        int lineNum;
+        int columnNum;
 
-        do {
-            System.out.println("Entrez la position du placement de la pièce (exemple: A1)");
-            isValid = true;
+        while (true) {
+            System.out.println("\nEntrez la position du placement de la pièce (exemple: A1 ou AA1)");
             line = new StringBuilder();
             column = new StringBuilder();
             answer = sc.next();
@@ -145,21 +201,80 @@ public class Grid {
                 columnNum = Integer.parseInt(line.toString());
             } catch (NumberFormatException e) {
                 System.out.println("Le numéro de colonne n'est pas correct!");
-                isValid = false;
+                continue;
+            }
+
+            if (columnNum > this.width) {
+                System.out.println("Cette colonne ne fait pas partie de la grille!");
+                continue;
             }
 
             if (!ConsoleUtils.isValidLetter(column.toString())) {
                 System.out.println("La ligne n'est pas correcte!");
-                isValid = false;
+                continue;
             }
-            else lineNum = ConsoleUtils.getNumFromLetter(column.toString(), this.matrix.length);
+            else lineNum = ConsoleUtils.getNumFromLetter(column.toString(), this.height);
 
-            if (lineNum > this.matrix.length) {
+            if (lineNum > this.height) {
                 System.out.println("Cette colonne ne fait pas partie de la grille!");
-                isValid = false;
+                continue;
             }
-        } while (!isValid);
+
+            break;
+        }
 
         return new Position(columnNum, lineNum);
+    }
+
+    /**
+     * Une fonction qui permet de déterminer si un {@link Polyomino} peut être placé à la position sélectionnée
+     * @param polyomino Le polyomino à placer
+     * @param selectedPosition La {@link Position} à laquelle placer le polyomino
+     * @return Vrai si le polyomino peut être placé à cette position, faux sinon
+     */
+    private boolean isFree(Polyomino polyomino, Position selectedPosition) {
+        for (int x = 0; x < polyomino.getBlocks().length; x++) {
+            for (int y = 0; y < polyomino.getBlocks()[0].length; y++) {
+                if (!polyomino.getBlocks()[x][y]) continue;
+                Position res = new Position(selectedPosition.getX() + x - polyomino.getCenterPosition().getX(),
+                        selectedPosition.getY() + y - polyomino.getCenterPosition().getY());
+                if (res.getX() < 0 || res.getY() < 0 || res.getY() > this.height - 1 || res.getX() > this.width - 1) return false;
+                else if (this.matrix[res.getY()][res.getX()] != '.') return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Une fonction qui place un {@link Polyomino} à la position sélectionnée, tout en vérifiant que le polyomino puisse
+     * bien être placé
+     * @param polyomino Le Polyomino à placer
+     * @param player Le joueur plaçant le Polyomino
+     * @param selectedPosition La {@link Position} à laquelle placer le Polyomino
+     * @return Vrai si le polyomino a pu être placé, faux sinon
+     * @see Player
+     */
+    private boolean placePolyomino(Polyomino polyomino, Player player, Position selectedPosition) {
+        if (!isFree(polyomino, selectedPosition)) {
+            System.out.println("Vous ne pouvez pas placer ce polyomino à cette position!");
+            return false;
+        }
+        for (int y = 0; y < polyomino.getBlocks().length; y++) {
+            for (int x = 0; x < polyomino.getBlocks()[y].length; x++) {
+                if (!polyomino.getBlocks()[y][x]) continue;
+                Position res = new Position(selectedPosition.getX() + x - polyomino.getCenterPosition().getX(),
+                        selectedPosition.getY() + y - polyomino.getCenterPosition().getY());
+                this.matrix[res.getY()][res.getX()] = player.getChar();
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Renvoie la taille maximale d'un {@link Polyomino} à générer dans cette grille
+     * @return La taille maximale de génération de Polyomino pour cette grille
+     */
+    public int getMaxPolySize() {
+        return this.maxPolySize;
     }
 }
