@@ -86,7 +86,8 @@ public class Polyomino {
         StringBuilder str = new StringBuilder();
         for (int y = 0; y < this.blocks.length; y++) {
             for (int x = 0; x < this.blocks.length; x++) {
-                str.append((this.blocks[y][x]) ? "X  " : ".  ");
+                if (x == this.getCenterPosition().getX() && y == this.getCenterPosition().getY()) str.append("+  ");
+                else str.append((this.blocks[y][x]) ? "X  " : ".  ");
             }
             str.append('\n');
         }

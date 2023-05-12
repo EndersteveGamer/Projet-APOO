@@ -171,9 +171,9 @@ public class Grid {
             do {
                 System.out.println("Entrez le caractère d'affichage du joueur");
                 chr = sc.next().charAt(0);
-                if (chr == '.') System.out.println("Ce caractère n'est pas valide");
+                if (chr == '.' || chr == '+') System.out.println("Ce caractère n'est pas valide");
                 else if (isTaken(chr)) System.out.println("Ce caractère est déjà pris");
-            } while (chr == '.' || isTaken(chr));
+            } while (chr == '.' || chr == '+' || isTaken(chr));
 
             String answer;
             boolean isBot = true;
