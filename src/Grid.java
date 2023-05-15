@@ -1,10 +1,13 @@
+// Théo Pariney
+// Hugo Métayer
+
 import java.util.Scanner;
 
 /**
  * Une classe représentant la grille de jeu
  */
 public class Grid {
-    private char[][] matrix;
+    private final char[][] matrix;
     private final Player[] players;
     private int height;
     private int width;
@@ -41,7 +44,10 @@ public class Grid {
                 if (player.isBot()) isGameFinished = botTurn(player);
                 else isGameFinished = playerTurn(player);
 
-                if (isGameFinished) return;
+                if (isGameFinished) {
+                    System.out.println("Le joueur " + (i + 1) + " a perdu!");
+                    return;
+                }
             }
         }
     }
@@ -81,6 +87,11 @@ public class Grid {
         System.out.println(this);
         System.out.println("Polyomino à placer:");
         System.out.println(player.getPolyominos()[0]);
+        System.out.println("Prochains Polyominos:");
+        for (int i = 1; i < player.getPolyominos().length; i++) {
+            System.out.println("Polyomino " + (i + 1) + ":");
+            System.out.println(player.getPolyominos()[i]);
+        }
         Polyomino polyomino = player.getPolyominos()[0];
         Position[] possiblePositions = new Position[this.width * this.height];
         for (int y = 0; y < this.height; y++) {
@@ -93,9 +104,11 @@ public class Grid {
         Position selectedPosition = new Position(-1, -1);
         while (!ArrayUtils.contains(possiblePositions, selectedPosition)) {
             selectedPosition = enterPosition();
+            if (!ArrayUtils.contains(possiblePositions, selectedPosition)) {
+                System.out.println("Ce Polyomino ne peut pas être placé ici!");
+            }
         }
         placePolyomino(polyomino, player, selectedPosition);
-        player.removePolyomino(0, this);
         return false;
     }
 

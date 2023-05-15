@@ -1,3 +1,6 @@
+// Théo Pariney
+// Hugo Métayer
+
 /**
  * Une classe représentant une position
  */

@@ -1,11 +1,14 @@
+// Théo Pariney
+// Hugo Métayer
+
 /**
  * Une classe représentant un joueur
  */
 public class Player {
-    private final int POLYOMINOS_COUNT = 5;
+    private final int POLYOMINOS_COUNT = 3;
     private final char caractere;
     private final boolean isBot;
-    private Polyomino[] polyominos;
+    private final Polyomino[] polyominos;
 
     /**
      * Un constructeur de la classe {@link Player}

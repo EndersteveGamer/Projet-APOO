@@ -1,3 +1,6 @@
+// Théo Pariney
+// Hugo Métayer
+
 /**
  * Une classe contenant des fonctions utilitaires en lien avec les tableaux
  */

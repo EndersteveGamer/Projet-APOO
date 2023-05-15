@@ -1,3 +1,6 @@
+// Théo Pariney
+// Hugo Métayer
+
 import java.util.Scanner;
 
 /**

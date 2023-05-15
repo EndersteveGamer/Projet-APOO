@@ -1,3 +1,8 @@
+// Théo Pariney
+// Hugo Métayer
+
+import java.util.Arrays;
+
 /**
  * La classe principale
  */
